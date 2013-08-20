@@ -463,7 +463,9 @@
 					});
 				}else{
                                     var s =  $('#swipebox-slider .slide').eq(index);
-                                    s.html($this.getVideo(src));
+                                    s.html($this.getVideo(src, index));
+                                    
+                                    //alert($this.getVideo(src));
                                         
                                     var f =  s.find('.flowplayer');
                                     if (f.length)
@@ -509,7 +511,7 @@
 					
 			},
 
-			getVideo : function(url){
+			getVideo : function(url, index){
 				var iframe = '';
 				var output = '';
 				var youtubeUrl = url.match(/watch\?v=([a-zA-Z0-9\-_]+)/);
@@ -525,12 +527,12 @@
 					iframe = '<iframe width="560" height="315"  src="http://player.vimeo.com/video/'+vimeoUrl[1]+'?byline=0&amp;portrait=0&amp;color='+plugin.settings.vimeoColor+'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
 				
 				}else {
-                                        var t = this.target;
-                                        var thumbnail = t.attr('src').replace('236xn', '1200xn');
+                                        // Unfortunately introduce a dependency upstream here; this is fragile
+                                        var t = $('#tiles li:eq(' + index + ') img');
+                                        var full_size_thumbnail = t.attr('src').replace('236xn', '1200xn');
 
-                                        iframe = '<div class="flowplayer" data-movie="' + url + '" style="height:' + t.data('mediaHeight') + 'px;width:' + t.data('mediaWidth') + 'px;background-size: cover;background: #000 url(' + thumbnail + ') no-repeat;"></div>';
-                                        innerContainerClass = '';
-				
+                                        iframe = '<div class="flowplayer" data-movie="' + url + '" style="height:' + t.data('mediaHeight') + 'px;width:' + t.data('mediaWidth') + 'px;background-size: cover;background: #000 url(' + full_size_thumbnail + ') no-repeat;"></div>';
+                                        innerContainerClass = '';				
 				} 
                                 return '<div class="swipebox-video-container" style="max-width:'+plugin.settings.videomaxWidth+'px"><div class="' + innerContainerClass + '">'+iframe+'</div></div>';
 			},
