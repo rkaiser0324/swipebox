@@ -462,7 +462,22 @@
 						$('#swipebox-slider .slide').eq(index).html(this);
 					});
 				}else{
-					$('#swipebox-slider .slide').eq(index).html($this.getVideo(src));
+                                    var s =  $('#swipebox-slider .slide').eq(index);
+                                    s.html($this.getVideo(src));
+                                        
+                                    var f =  s.find('.flowplayer');
+                                    if (f.length)
+                                    {
+                                        f.flowplayer({
+                                            adaptiveRatio: true,
+                                            playlist: [
+                                                // a list of type-url mappings in picking order
+                                                [
+                                                    {mp4: f.data('movie')}
+                                                ]
+                                            ],
+                                        });
+                                    }
 				}
 				
 			},
@@ -485,7 +500,8 @@
 				if( src ){
 					if( 
 						src.match(/youtube\.com\/watch\?v=([a-zA-Z0-9\-_]+)/) 
-						|| src.match(/vimeo\.com\/([0-9]*)/) 
+						|| src.match(/vimeo\.com\/([0-9]*)/)
+                                                || src.match(/\.mp4$/)                                   
 					){
 						return true;
 					}
@@ -498,6 +514,8 @@
 				var output = '';
 				var youtubeUrl = url.match(/watch\?v=([a-zA-Z0-9\-_]+)/);
 				var vimeoUrl = url.match(/vimeo\.com\/([0-9]*)/);
+                                
+                                var innerContainerClass = "swipebox-video";
 				if( youtubeUrl ){
 
 					iframe = '<iframe width="560" height="315" src="//www.youtube.com/embed/'+youtubeUrl[1]+'" frameborder="0" allowfullscreen></iframe>';
@@ -506,9 +524,15 @@
 
 					iframe = '<iframe width="560" height="315"  src="http://player.vimeo.com/video/'+vimeoUrl[1]+'?byline=0&amp;portrait=0&amp;color='+plugin.settings.vimeoColor+'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
 				
-				}
+				}else {
+                                        var t = this.target;
+                                        var thumbnail = t.attr('src').replace('236xn', '1200xn');
 
-				return '<div class="swipebox-video-container" style="max-width:'+plugin.settings.videomaxWidth+'px"><div class="swipebox-video">'+iframe+'</div></div>';
+                                        iframe = '<div class="flowplayer" data-movie="' + url + '" style="height:' + t.data('mediaHeight') + 'px;width:' + t.data('mediaWidth') + 'px;background-size: cover;background: #000 url(' + thumbnail + ') no-repeat;"></div>';
+                                        innerContainerClass = '';
+				
+				} 
+                                return '<div class="swipebox-video-container" style="max-width:'+plugin.settings.videomaxWidth+'px"><div class="' + innerContainerClass + '">'+iframe+'</div></div>';
 			},
 			
 			loadMedia : function (src, callback){
