@@ -400,6 +400,13 @@
 			},
 			
 			setSlide : function (index, isFirst){
+                    
+                                // Stop any instantiated videos
+                                for (var i=0; i<$('.flowplayer').length; i++)
+                                {
+                                    flowplayer(i).stop();
+                                }
+
 				isFirst = isFirst || false;
 				
 				var slider = $('#swipebox-slider');
