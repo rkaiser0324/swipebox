@@ -530,11 +530,16 @@
                                         // Unfortunately introduce a dependency upstream here; this is fragile
                                         var t = $('#tiles li:eq(' + index + ') img');
                                         var full_size_thumbnail = t.attr('src').replace('236xn', '1200xn');
+                                        
+                                        // Resize the video down to what will fit on the screen
+                                        var width = Math.min(1200, t.data('mediaWidth'));                                       
+                                        width = Math.min(width, $('#swipebox-slider').width());                                       
+                                        var height = t.data('mediaHeight') * (width / t.data('mediaWidth'));
 
-                                        iframe = '<div class="flowplayer" data-movie="' + url + '" style="height:' + t.data('mediaHeight') + 'px;width:' + t.data('mediaWidth') + 'px;background-size: cover;background: #000 url(' + full_size_thumbnail + ') no-repeat;"></div>';
+                                        iframe = '<div class="flowplayer" data-movie="' + url + '" style="height:' + height + 'px;width:' + width + 'px;background-size: cover;background: #000 url(' + full_size_thumbnail + ') no-repeat;"></div>';
                                         innerContainerClass = '';				
 				} 
-                                return '<div class="swipebox-video-container" style="max-width:'+plugin.settings.videomaxWidth+'px"><div class="' + innerContainerClass + '">'+iframe+'</div></div>';
+                                return '<div class="swipebox-video-container" style="padding:0;max-width:'+plugin.settings.videomaxWidth+'px"><div class="' + innerContainerClass + '">'+iframe+'</div></div>';
 			},
 			
 			loadMedia : function (src, callback){
